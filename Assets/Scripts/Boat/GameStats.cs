@@ -1,3 +1,4 @@
+using System;
 using UnityEngine;
 
 namespace CrocHunter
@@ -17,6 +18,9 @@ namespace CrocHunter
         public int   Score    => CrocKills * 100 + Headshots * 50 + FishShot * 25 + (int)(TimeSurvived * 5);
         public float Accuracy => ShotsFired > 0 ? ShotsHit / (float)ShotsFired * 100f : 0f;
 
+        public event Action OnStatsChanged;
+        public event Action<string, Vector3> OnScoreEvent;
+
         void Awake()
         {
             if (Instance != null && Instance != this) { Destroy(this); return; }
@@ -33,7 +37,22 @@ namespace CrocHunter
         public void AddTime(float dt)         => TimeSurvived += dt;
         public void RecordShotFired()         => ShotsFired++;
         public void RecordShotHit()           => ShotsHit++;
-        public void RecordFishShot()          { FishShot++; ShotsHit++; }
-        public void RecordCrocKill(bool head) { CrocKills++; if (head) Headshots++; }
+
+        public void RecordFishShot()
+        {
+            FishShot++;
+            ShotsHit++;
+            OnStatsChanged?.Invoke();
+        }
+
+        public void RecordCrocKill(bool head)
+        {
+            CrocKills++;
+            if (head) Headshots++;
+            OnStatsChanged?.Invoke();
+        }
+
+        public void FireScoreEvent(string label, Vector3 worldPos)
+            => OnScoreEvent?.Invoke(label, worldPos);
     }
 }

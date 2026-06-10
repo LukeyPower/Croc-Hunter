@@ -19,6 +19,7 @@ namespace CrocHunter
         public bool IsReloading { get; private set; }
 
         public event Action OnAmmoChanged;
+        public event Action OnHit;
 
         void Awake()
         {
@@ -93,11 +94,13 @@ namespace CrocHunter
                     Debug.Log($"[SHOOT] HIT — {shotType} shot on '{hit.collider.transform.root.name}'");
                     GameStats.Instance?.RecordShotHit();
                     crocHitbox.TakeHit();
+                    OnHit?.Invoke();
                 }
                 else if (fish != null)
                 {
                     Debug.Log($"[SHOOT] HIT — Barramundi '{hit.collider.name}'");
                     fish.OnShot(); // fish calls GameStats.RecordFishShot() internally
+                    OnHit?.Invoke();
                 }
                 else
                 {

@@ -39,6 +39,7 @@ namespace CrocHunter
             if (_shot) return;
             _shot = true;
             Debug.Log("[FISH] SHOT — healing player");
+            GameStats.Instance?.FireScoreEvent("+25 FISH", transform.position);
             GameStats.Instance?.RecordFishShot();
             PlayerHealth.Instance.Heal();
             Destroy(gameObject);

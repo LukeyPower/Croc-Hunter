@@ -99,10 +99,14 @@ namespace CrocHunter
             Die(true);
         }
 
+        public void SetWarningDuration(float d) { warningTime = d; }
+
         private void Die(bool headshot)
         {
             Debug.Log($"[CROC] Killed (headshot={headshot})");
             _state = State.Dead;
+            string label = headshot ? "+150\nHEADSHOT!" : "+100";
+            GameStats.Instance?.FireScoreEvent(label, transform.position);
             GameStats.Instance?.RecordCrocKill(headshot);
             Destroy(gameObject, 0.15f);
         }
