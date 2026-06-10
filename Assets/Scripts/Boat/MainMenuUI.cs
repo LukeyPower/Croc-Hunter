@@ -25,6 +25,7 @@ namespace CrocHunter
         void Update()
         {
             if (!gameObject.activeInHierarchy) return;
+            if (GameManager.Instance?.State != GameState.MainMenu) return;
 
             // Pulse the start prompt
             if (_pulseText != null)

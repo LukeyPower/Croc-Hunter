@@ -24,6 +24,7 @@ namespace CrocHunter
         void Update()
         {
             if (!gameObject.activeInHierarchy) return;
+            if (GameManager.Instance?.State != GameState.Leaderboard) return;
 
             if (Mouse.current?.leftButton.wasPressedThisFrame == true)
             {
