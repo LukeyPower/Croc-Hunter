@@ -132,6 +132,7 @@ GameObject:
   - component: {fileID: 64257405}
   - component: {fileID: 64257409}
   - component: {fileID: 64257408}
+  - component: {fileID: 64257411}
   m_Layer: 0
   m_Name: GameManager
   m_TagString: Untagged
@@ -214,6 +215,18 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: dfd56b4bd2be4e64090e30e901ac15b0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::CrocHunter.GameStats
+--- !u!114 &64257411
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 64257404}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: eed2bd8c33dba7845975632a7f9038eb, type: 3}
+  m_Name:
+  m_EditorClassIdentifier: Assembly-CSharp::CrocHunter.SessionLeaderboard
 --- !u!1 &357957693
 GameObject:
   m_ObjectHideFlags: 0

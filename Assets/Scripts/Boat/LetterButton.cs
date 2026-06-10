@@ -22,5 +22,12 @@ namespace CrocHunter
         {
             if (_bg) _bg.color = on ? _hoverColor : _normalColor;
         }
+
+        public void SetNormalColor(Color c)
+        {
+            _normalColor = c;
+            if (_bg && _bg.color != _hoverColor)
+                _bg.color = _normalColor;
+        }
     }
 }

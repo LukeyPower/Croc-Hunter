@@ -17,10 +17,12 @@ namespace CrocHunter
         private const float BtnSize    = 70f;
         private const float BtnGap     = 8f;
         private const char  Backspace  = '\b';
+        private const char  Accept     = '\r';
 
         private readonly List<char>         _selected    = new();
         private readonly List<LetterButton> _allButtons  = new();
         private LetterButton                _highlighted;
+        private LetterButton                _acceptButton;
         private Text[]                      _slotTexts   = new Text[3];
 
         void Start()
@@ -71,6 +73,17 @@ namespace CrocHunter
             var btn = GetButtonUnderCursor();
             if (btn == null) return;
 
+            if (btn.Letter == Accept)
+            {
+                if (_selected.Count == 3)
+                {
+                    string name = new string(_selected.ToArray());
+                    Debug.Log($"[NAME] Accepted: {name}");
+                    GameManager.Instance.SubmitNameEntry(name);
+                }
+                return;
+            }
+
             if (btn.Letter == Backspace)
             {
                 if (_selected.Count > 0) _selected.RemoveAt(_selected.Count - 1);
@@ -83,13 +96,6 @@ namespace CrocHunter
             }
 
             RefreshSlots();
-
-            if (_selected.Count == 3)
-            {
-                string name = new string(_selected.ToArray());
-                Debug.Log($"[NAME] Submitted: {name}");
-                GameManager.Instance.SubmitNameEntry(name);
-            }
         }
 
         private LetterButton GetButtonUnderCursor()
@@ -116,6 +122,14 @@ namespace CrocHunter
             {
                 if (_slotTexts[i] != null)
                     _slotTexts[i].text = i < _selected.Count ? _selected[i].ToString() : "_";
+            }
+
+            if (_acceptButton != null)
+            {
+                bool ready = _selected.Count == 3;
+                _acceptButton.SetNormalColor(ready
+                    ? new Color(0.1f, 0.55f, 0.1f, 1f)
+                    : new Color(0.22f, 0.22f, 0.22f, 0.6f));
             }
         }
 
@@ -223,6 +237,36 @@ namespace CrocHunter
                 letterBtn.Init(letters[i]);
                 _allButtons.Add(letterBtn);
             }
+
+            // Accept button — large, centred at the bottom
+            var acceptGO = new GameObject("AcceptBtn");
+            acceptGO.transform.SetParent(transform, false);
+            var acceptRT = acceptGO.AddComponent<RectTransform>();
+            acceptRT.anchorMin = acceptRT.anchorMax = acceptRT.pivot = new Vector2(0.5f, 0.1f);
+            acceptRT.sizeDelta = new Vector2(300f, 70f);
+            acceptRT.anchoredPosition = Vector2.zero;
+
+            var acceptImg = acceptGO.AddComponent<Image>();
+            acceptImg.raycastTarget = true;
+
+            var acceptLbl = new GameObject("Label");
+            acceptLbl.transform.SetParent(acceptGO.transform, false);
+            var acceptLblRT = acceptLbl.AddComponent<RectTransform>();
+            acceptLblRT.anchorMin = Vector2.zero;
+            acceptLblRT.anchorMax = Vector2.one;
+            acceptLblRT.offsetMin = acceptLblRT.offsetMax = Vector2.zero;
+            var acceptTxt = acceptLbl.AddComponent<Text>();
+            acceptTxt.text = "ACCEPT";
+            acceptTxt.font = Resources.GetBuiltinResource<Font>("LegacyRuntime.ttf");
+            acceptTxt.fontSize = 44;
+            acceptTxt.color = Color.white;
+            acceptTxt.alignment = TextAnchor.MiddleCenter;
+            acceptTxt.raycastTarget = false;
+
+            _acceptButton = acceptGO.AddComponent<LetterButton>();
+            _acceptButton.Init(Accept);
+            _allButtons.Add(_acceptButton);
+            RefreshSlots(); // set initial (grayed-out) color
         }
 
         private Text MakeText(string goName, string content, int fontSize, Color color,
